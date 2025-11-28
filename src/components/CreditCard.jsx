@@ -46,4 +46,4 @@ function CreditCard({ nombre, descripcion, tasa, monto, plazo, imagen }) {
   );
 }
 
-export default CreditCard; //Permite importar CreditCard en otras páginas.
+export default CreditCard; //Permite importar CreditCard en otras páginas.

@@ -1,6 +1,5 @@
 /* src/styles/navbar.css */
 
-
 /* Headers con fondo por página */
 .header-inicio {
   padding: 2rem 0;
@@ -12,7 +11,6 @@
   box-sizing: border-box;
 }
 
-
 .header-simulador {
   padding: 2rem 0;
   min-height: 400px;
@@ -23,7 +21,6 @@
   box-sizing: border-box;
 }
 
-
 .header-solicitar {
   padding: 2rem 0;
   min-height: 400px;
@@ -33,7 +30,6 @@
   width: 100%;
   box-sizing: border-box;
 }
-
 
 /* Contenedor centrado con ancho máximo para que el contenido no sea demasiado ancho en pantallas grandes */
 .encabezado {
@@ -47,7 +43,6 @@
   box-sizing: border-box;
 }
 
-
 /* Logo */
 .logo-contenedor {
   display: flex;
@@ -59,7 +54,6 @@
   height: auto;
   object-fit: contain;
 }
-
 
 /* Menú */
 .menu {
@@ -80,7 +74,6 @@
 .menu a.active {
   color: #000000;
 }
-
 
 /* Estilos responsivos */
 @media (max-width: 768px) {

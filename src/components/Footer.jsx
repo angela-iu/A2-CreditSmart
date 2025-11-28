@@ -61,4 +61,4 @@ function Footer() { // El JSX dentro del return es lo que se va a mostrar en pan
   );
 }
 
-export default Footer; // Permite importar Footer en cualquier página, como Home, Simulator, etc.
+export default Footer; // Permite importar Footer en cualquier página, como Home, Simulator, etc.

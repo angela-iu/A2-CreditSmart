@@ -12,7 +12,7 @@ function Navbar() {
   };
 
   return (
-    <header className={getHeaderClass()}> {/aplica la clase CSS según la ruta actual./}
+    <header className={getHeaderClass()}> {/*aplica la clase CSS según la ruta actual.*/}
       <div className="encabezado">
         <div className="logo-contenedor">
           <img src="/img/CreditSmart_logo.png" alt="Logo CreditSmart" className="logo-img" />
@@ -21,7 +21,7 @@ function Navbar() {
         <nav>
           <ul className="menu">
             <li>
-              <NavLink to="/" end> {/crea enlaces que React Router maneja sin recargar la página./}
+              <NavLink to="/" end> {/*crea enlaces que React Router maneja sin recargar la página.*/}
                 Inicio
               </NavLink>
             </li>
@@ -44,4 +44,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Navbar;

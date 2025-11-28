@@ -14,4 +14,4 @@ function Hero({ titulo, parrafos }) { //Recibe props
   );
 }
 
-export default Hero;
+export default Hero;

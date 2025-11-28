@@ -15,7 +15,7 @@ function Home() {
 
   return (
     <div>
-      <Hero titulo="Nuestros Servicios" parrafos={heroTextos} /> {/Uso del componente Hero/}
+      <Hero titulo="Nuestros Servicios" parrafos={heroTextos} /> {/*Uso del componente Hero*/}
 
       {/* Sección de productos crediticios */}
       <section className="seccion-creditos">
@@ -34,9 +34,9 @@ function Home() {
         </div>
       </section>
 
-      <Footer /> {/Cierra el footer/}
+      <Footer /> {/*Cierra el footer*/}
     </div>
   );
 }
 
-export default Home;
+export default Home;
