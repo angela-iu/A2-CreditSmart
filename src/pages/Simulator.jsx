@@ -95,8 +95,8 @@ function Simulador() {
               <option value="">Seleccione una opción</option>
               
               {/* se recorre el array y según la opción elegida, este se muestra en el option */}
-              {nombresDisponibles.map((n, i) => ( 
-                <option key={i} value={n}>{n}</option>
+              {nombresDisponibles.map((n, i) => ( //i → representa el índice de ese elemento (0, 1, 2…).
+                <option key={i} value={n}>{n}</option> //n → representa el elemento actual del array (es decir, el nombre del crédito).
               ))}
             </select>
           </div>

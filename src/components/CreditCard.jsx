@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"; // Permite navegar entre rutas
 
 // Props para que el componente sa reutilizable.
 function CreditCard({ nombre, descripcion, tasa, monto, plazo, imagen }) {
-  const navigate = useNavigate(); // Guarda la función navigate qye permitr cambiar la ruta.
+  const navigate = useNavigate(); // Guarda la función navigate que permiter cambiar la ruta. 
 
   //Que pasa al ahcer clic en solicitar ahora.
   const handleSolicitarClick = () => {
@@ -17,7 +17,7 @@ function CreditCard({ nombre, descripcion, tasa, monto, plazo, imagen }) {
       <div className="card-content">
         {/* Muestra el nombre del crédito en un h4 */}
         <h4 className="credit-title">{nombre}</h4>
-
+        
         {/*Si existe descripción la muesta en un p */}
         {descripcion && <p className="card-description">{descripcion}</p>}
 

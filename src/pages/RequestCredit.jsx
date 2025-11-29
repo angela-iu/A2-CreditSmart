@@ -8,7 +8,7 @@ import "../styles/solicitar.css";
 // Estados del formulario de solicitud de crédito
 // Cada useState guarda un dato o control del formulario
 const RequestCredit = () => {
-  const [nombre, setNombre] = useState(""); //Para que cambie de estar vacio a lleno (onChange)
+  const [nombre, setNombre] = useState(""); 
   const [cedula, setCedula] = useState("");
   const [monto, setMonto] = useState("");
   const [plazo, setPlazo] = useState("");
@@ -16,23 +16,29 @@ const RequestCredit = () => {
   const [telefono, setTelefono] = useState("");
   const [tipoCredito, setTipoCredito] = useState("");
 
-  // Estados auxiliares
-  const [errors, setErrors] = useState({}); // Errores de validación
-  const [cuota, setCuota] = useState(null); // Cálculo de la cuota
+  // Manejo de errores
+  const [errors, setErrors] = useState({}); 
+  const [cuota, setCuota] = useState(null); 
   const [resumenVisible, setResumenVisible] = useState(false);
-  const [solicitudes, setSolicitudes] = useState([]); // Historial de solicitudes
-  const [success, setSuccess] = useState(false); // Indica si la solicitud fue exitosa
+  const [solicitudes, setSolicitudes] = useState([]); 
+  const [success, setSuccess] = useState(false); 
+  const [formError, setFormError] = useState(""); // <-- AGREGADO (NO afecta tus comentarios)
 
   // VALIDACIONES EN TIEMPO REAL
-  const validate = (field, value) => { //Recibe 2 cosas, el nombre y el valor de ese campo
-    let newErrors = { ...errors }; //Crea una copia independiente, agrega o quita errores sin modificar el original
+  const validate = (field, value) => { 
+    let newErrors = { ...errors }; 
 
-    if (field === "nombre" && value.trim().length < 3) { //Si el nombre tiene menos de 3 carácteres
+    if (field === "nombre" && value.trim().length < 3) { 
       newErrors.nombre = "El nombre debe tener al menos 3 caracteres.";
     } else {
-      delete newErrors.nombre; //Si no, lo elimina (si el valor es válido)
+      delete newErrors.nombre; 
     }
 
+    //!/^\d{10}$/.test(value)
+    //Esto revisa si el valor NO cumple con el formato correcto.
+    // /^\d{10}$/ → expresión regular
+    // /^ → inicio  \d → dígito  {10} → exactamente 10 dígitos $ → final
+    
     if (field === "cedula" && !/^\d{6,10}$/.test(value)) {
       newErrors.cedula = "La cédula debe ser numérica y entre 6 y 10 dígitos.";
     } else {
@@ -50,44 +56,80 @@ const RequestCredit = () => {
     } else {
       delete newErrors.telefono;
     }
- 
-    setErrors(newErrors); // Actualiza el estado 'errors' con el objeto 'newErrors'.
-                          // Esto hace que React muestre en pantalla los mensajes de error actuales
-                          // o los elimine si el campo ya es válido.
+  
+    setErrors(newErrors); 
+  };
+
+  // VALIDACIÓN FINAL DE TODO EL FORMULARIO 
+  const validateAll = () => {
+    let newErrors = {};
+
+    if (nombre.trim().length < 3) {
+      newErrors.nombre = "El nombre debe tener al menos 3 caracteres.";
+    }
+
+    if (!/^\d{6,10}$/.test(cedula)) {
+      newErrors.cedula = "La cédula debe ser numérica y entre 6 y 10 dígitos.";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      newErrors.correo = "Correo no válido.";
+    }
+
+    if (!/^\d{10}$/.test(telefono)) {
+      newErrors.telefono = "El teléfono debe tener 10 dígitos.";
+    }
+
+    setErrors(newErrors);
+    return newErrors;
   };
 
   // CÁLCULO CUOTA
   const calcularCuota = (monto, plazo) => {
-    if (!monto || !plazo) return null; //Si falta alguno de los 2 valores no calcula nada
+    if (!monto || !plazo) return null; 
 
     const tasaMensual = 0.015;
-    const p = parseFloat(monto); //Se aseura que los valores sean números
-    const n = parseInt(plazo); // ...
+    const p = parseFloat(monto); 
+    const n = parseInt(plazo); 
 
-    //Formula para calcular los pagos
     //(monto * tasaMensual) / (1 - (1+tasaMensual)^-plazo)
     const cuotaCalc =
       (p * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -n));
 
-    return cuotaCalc.toFixed(2); //Redondea el resultado a 2 decimales
+    return cuotaCalc.toFixed(2); 
   };
 
-  const handleMontoPlazoChange = (field, value) => { // field indica que campo cambió, value es el nuevo valor que se ingresó
-    if (field === "monto") setMonto(value); //si se cambio monto, se actualiza
-    if (field === "plazo") setPlazo(value); //Si se cambió plazo, se actualiza (con setPLazo)
+  const handleMontoPlazoChange = (field, value) => { 
+    if (field === "monto") setMonto(value); 
+    if (field === "plazo") setPlazo(value); 
 
-    // Se asegura que se use el valor más reciente
-    // Ejm: Si el campo que cambió fue el monto, usa value como updatedMonto.
-    // Si no, usa el monto que ya estaba guardado.
     const updatedMonto = field === "monto" ? value : monto;
     const updatedPlazo = field === "plazo" ? value : plazo;
 
-    setCuota(calcularCuota(updatedMonto, updatedPlazo)); //Llama la función, guarda el resultado en el estado cuota
+    setCuota(calcularCuota(updatedMonto, updatedPlazo)); 
+  };
+
+  // *** VALIDACIÓN ANTES DE MOSTRAR RESUMEN ***
+  const handleResumen = () => {
+    const validationErrors = validateAll(); // <-- NUEVO
+
+    if (!nombre || !cedula || !correo || !telefono || !monto || !plazo || !tipoCredito) {
+      setFormError("Por favor completa todos los campos antes de continuar.");
+      return;
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormError("Corrige los errores marcados antes de continuar.");
+      return;
+    }
+
+    setFormError("");
+    setResumenVisible(true);
   };
 
   // ENVIAR SOLICITUD
   const enviarSolicitud = () => {
-    const nuevaSolicitud = { //Agrupa todos los valores actuales del formulario en un solo objeto
+    const nuevaSolicitud = { 
       nombre,
       cedula,
       correo,
@@ -99,13 +141,12 @@ const RequestCredit = () => {
     };
 
     //MEMORIA TEMPORAL.
-    setSolicitudes([...solicitudes, nuevaSolicitud]); //// Agrega la nueva solicitud al arreglo de solicitudes,
+    setSolicitudes([...solicitudes, nuevaSolicitud]); 
 
-    setSuccess(true); //Activa un estado de éxito (ej. un mensaje de “Solicitud enviada”).
+    setSuccess(true); 
     setResumenVisible(false);
 
     // limpiar
-    // Resetea todos los estados para que los inputs queden vacíos.
     setNombre("");
     setCedula("");
     setCorreo("");
@@ -115,7 +156,7 @@ const RequestCredit = () => {
     setCuota(null);
     setTipoCredito(""); 
 
-    setTimeout(() => setSuccess(false), 3000); //Usa setTimeout para volver a poner success en false después de 3000 ms (3 segundos).
+    setTimeout(() => setSuccess(false), 3000); 
   };
 
   return (
@@ -140,14 +181,14 @@ const RequestCredit = () => {
             <label>Nombre Completo</label>
             <input
               type="text"
-              value={nombre} // Input controlado: el valor del campo siempre refleja el estado,
-                            // y al escribir se actualiza el estado.
-              onChange={(e) => { //Cada vez que el usuario escribe algo
-                setNombre(e.target.value); //guarda el nuevo valor en el estado nombre.
-                validate("nombre", e.target.value); //valida en tiempo real ese valor.
+              value={nombre} 
+              onChange={(e) => { 
+                setNombre(e.target.value); 
+                validate("nombre", e.target.value); 
               }}
+              onBlur={(e) => validate("nombre", e.target.value)} 
             />
-            {errors.nombre && <span className="error">{errors.nombre}</span>} {/*Renderiza un mensaje de error solo si existe errors.nombre. */}
+            {errors.nombre && <span className="error">{errors.nombre}</span>} 
           </div>
 
           {/* CÉDULA */}
@@ -160,6 +201,7 @@ const RequestCredit = () => {
                 setCedula(e.target.value);
                 validate("cedula", e.target.value);
               }}
+              onBlur={(e) => validate("cedula", e.target.value)} 
             />
             {errors.cedula && <span className="error">{errors.cedula}</span>}
           </div>
@@ -174,6 +216,7 @@ const RequestCredit = () => {
                 setCorreo(e.target.value);
                 validate("correo", e.target.value);
               }}
+              onBlur={(e) => validate("correo", e.target.value)} 
             />
             {errors.correo && <span className="error">{errors.correo}</span>}
           </div>
@@ -188,6 +231,7 @@ const RequestCredit = () => {
                 setTelefono(e.target.value);
                 validate("telefono", e.target.value);
               }}
+              onBlur={(e) => validate("telefono", e.target.value)} 
             />
             {errors.telefono && <span className="error">{errors.telefono}</span>}
           </div>
@@ -236,7 +280,6 @@ const RequestCredit = () => {
           </div>
 
           {/* CUOTA */}
-          {/*muestra la cuota mensual solo si existe un valor calculado. */}
           {cuota && (
             <p className="cuota">
               Cuota mensual estimada: <strong>${cuota}</strong>
@@ -247,32 +290,30 @@ const RequestCredit = () => {
           <button
             className="btn-morado"
             type="button"
-            onClick={() => setResumenVisible(true)} //Cuando el usuario hace clic, cambia el estado resumenVisible a true.
-            disabled={Object.keys(errors).length > 0 || !nombre || !cedula} //Solo se habilita si no hay errores y nombre y cédula están completos.
+            onClick={handleResumen}
           >
             Ver Resumen
           </button>
+
+          {formError && <p className="error-enviar">{formError}</p>}
         </form>
 
         {/* RESUMEN */}
-        {resumenVisible && ( //solo aparece si el estado resumenVisible es true.
+        {resumenVisible && (
           <div className="resumen">
             <h3>Resumen de la solicitud</h3>
-            {/*Cada <p> imprime un campo del formulario */}
-            {/*indica que el texto dentro tiene énfasis fuerte o importancia especial. */}
+
             <p><strong>Nombre:</strong> {nombre}</p>
             <p><strong>Cédula:</strong> {cedula}</p>
             <p><strong>Correo:</strong> {correo}</p>
             <p><strong>Teléfono:</strong> {telefono}</p>
 
-            {/* *** NUEVO *** */}
             <p><strong>Tipo de crédito:</strong> {tipoCredito}</p>
 
             <p><strong>Monto:</strong> ${monto}</p>
             <p><strong>Plazo:</strong> {plazo} meses</p>
             <p><strong>Cuota mensual:</strong> ${cuota}</p>
 
-          {/*Al hacer clic, ejecuta la función enviarSolicitud, que guarda la solicitud y limpia el formulario. */}
             <button className="btn-rosa" onClick={enviarSolicitud}>
               Enviar Solicitud
             </button>
@@ -280,7 +321,7 @@ const RequestCredit = () => {
         )}
 
         {/* ÉXITO */}
-        {success && (//el bloque <div> solo aparece si el estado success es true.
+        {success && (
           <div className="exito"> 
             ¡Solicitud enviada con éxito! 🎉
           </div>

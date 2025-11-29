@@ -11,6 +11,14 @@
   box-sizing: border-box;
 }
 
+/*Menu Sticky
+header {
+  position: sticky;
+  top: 0; 
+  z-index: 1000; 
+} */
+
+
 .header-simulador {
   padding: 2rem 0;
   min-height: 400px;
